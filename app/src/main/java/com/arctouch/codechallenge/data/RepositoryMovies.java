@@ -1,12 +1,13 @@
 package com.arctouch.codechallenge.data;
 
 
+import android.util.Log;
+
 import com.arctouch.codechallenge.api.TmdbApi;
 import com.arctouch.codechallenge.model.Movie;
 import com.arctouch.codechallenge.model.UpcomingMoviesResponse;
 
 import io.reactivex.Observer;
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.OkHttpClient;
@@ -23,8 +24,9 @@ public class RepositoryMovies {
             instance = new RepositoryMovies();
         }
 
-        return  instance;
+        return instance;
     }
+
     private RepositoryMovies() {
         this.api = new Retrofit.Builder()
                 .baseUrl(TmdbApi.URL)
@@ -36,6 +38,7 @@ public class RepositoryMovies {
     }
 
     public void upcomingMovies(Observer<UpcomingMoviesResponse> observer) {
+        Log.d("DEBUG", "UpcomingMovies()");
         api.upcomingMovies(TmdbApi.API_KEY, 1L)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

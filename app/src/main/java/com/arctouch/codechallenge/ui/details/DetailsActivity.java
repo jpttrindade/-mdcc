@@ -13,7 +13,7 @@ public class DetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.details_activity);
         if (savedInstanceState == null) {
-            Fragment fragment = DetailsViewFragment.newInstance();
+            Fragment fragment = DetailsView.newInstance();
             Bundle bundle = getIntent().getExtras();
             fragment.setArguments(bundle);
             getSupportFragmentManager().beginTransaction()

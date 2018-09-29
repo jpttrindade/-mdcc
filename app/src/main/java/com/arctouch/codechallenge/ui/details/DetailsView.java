@@ -6,8 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +13,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.arctouch.codechallenge.R;
+import com.arctouch.codechallenge.model.Movie;
 import com.arctouch.codechallenge.util.MovieImageUrlBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
-public class DetailsViewFragment extends Fragment {
+public class DetailsView extends Fragment {
 
     private DetailsViewModel mViewModel;
     private int mMovieID;
@@ -32,8 +31,8 @@ public class DetailsViewFragment extends Fragment {
     private GenreAdapter genreAdapter;
     private TextView tvReleaseDate;
 
-    public static DetailsViewFragment newInstance() {
-        return new DetailsViewFragment();
+    public static DetailsView newInstance() {
+        return new DetailsView();
     }
 
     private final MovieImageUrlBuilder movieImageUrlBuilder = new MovieImageUrlBuilder();
@@ -43,7 +42,9 @@ public class DetailsViewFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         mMovieID = getArguments().getInt("mid");
+
         View view = inflater.inflate(R.layout.details_view_fragment, container, false);
+
         tvTitle = view.findViewById(R.id.tvTilte);
         tvOverview = view.findViewById(R.id.tvOverview);
         tvReleaseDate = view.findViewById(R.id.tvRelaseDate);
@@ -55,6 +56,8 @@ public class DetailsViewFragment extends Fragment {
         rvGenres.setAdapter(genreAdapter);
         rvGenres.setHasFixedSize(true);
         rvGenres.setNestedScrollingEnabled(false);
+
+
         return view;
     }
 
@@ -62,26 +65,33 @@ public class DetailsViewFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(DetailsViewModel.class);
+        mViewModel.getMovieDetail().observe(this, movie -> loadData(movie));
+    }
 
 
-        mViewModel.getMovieDetail(mMovieID).observe(this, movie -> {
-            tvTitle.setText(movie.title);
-            tvOverview.setText(movie.overview);
-            tvReleaseDate.setText(movie.releaseDate);
-            Glide.with(this)
-                    .load(movieImageUrlBuilder.buildPosterUrl(movie.posterPath))
-                    .apply(new RequestOptions().placeholder(R.drawable.ic_image_placeholder))
-                    .into(ivPoster);
-            Glide.with(this)
-                    .load(movieImageUrlBuilder.buildBackdropUrl(movie.backdropPath))
-                    .apply(new RequestOptions().placeholder(R.drawable.ic_image_placeholder))
-                    .into(ivBackdrop);
+    @Override
+    public void onResume() {
+        super.onResume();
+        mViewModel.loadMovieDetail(mMovieID);
+    }
 
-            genreAdapter.setGenres(movie.genres);
+    public void loadData(Movie movie) {
+        tvTitle.setText(movie.title);
+        tvOverview.setText(movie.overview);
+        tvReleaseDate.setText(movie.releaseDate);
+        Glide.with(this)
+                .load(movieImageUrlBuilder.buildPosterUrl(movie.posterPath))
+                .apply(new RequestOptions().placeholder(R.drawable.ic_image_placeholder))
+                .into(ivPoster);
+        Glide.with(this)
+                .load(movieImageUrlBuilder.buildBackdropUrl(movie.backdropPath))
+                .apply(new RequestOptions().placeholder(R.drawable.ic_image_placeholder))
+                .into(ivBackdrop);
 
-            progressbar.setVisibility(View.GONE);
+        genreAdapter.setGenres(movie.genres);
 
-        });
+        progressbar.setVisibility(View.GONE);
+
 
     }
 
