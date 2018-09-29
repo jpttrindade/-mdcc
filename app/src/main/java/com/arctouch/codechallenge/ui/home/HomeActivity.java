@@ -1,4 +1,4 @@
-package com.arctouch.codechallenge.home;
+package com.arctouch.codechallenge.ui.home;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
