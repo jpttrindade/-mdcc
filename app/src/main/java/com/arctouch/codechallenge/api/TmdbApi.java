@@ -25,15 +25,12 @@ public interface TmdbApi {
     @GET("movie/upcoming")
     Observable<UpcomingMoviesResponse> upcomingMovies(
             @Query("api_key") String apiKey,
-            @Query("language") String language,
-            @Query("page") Long page,
-            @Query("region") String region
+            @Query("page") Long page
     );
 
     @GET("movie/{id}")
     Observable<Movie> movie(
             @Path("id") Long id,
-            @Query("api_key") String apiKey,
-            @Query("language") String language
+            @Query("api_key") String apiKey
     );
 }
