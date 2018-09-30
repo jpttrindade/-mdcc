@@ -124,7 +124,7 @@ public class MovieAdapter extends PagedListAdapter<Movie, RecyclerView.ViewHolde
             posterImageView = itemView.findViewById(R.id.posterImageView);
             itemView.setOnClickListener(view -> {
                 Movie movie = (Movie) view.getTag();
-                mMovieClickListner.onClick(movie);
+                mMovieClickListner.onClick(movie, posterImageView, titleTextView);
             });
         }
 

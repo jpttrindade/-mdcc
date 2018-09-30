@@ -1,18 +1,21 @@
 package com.arctouch.codechallenge.ui.home;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModelProviders;
 import android.arch.paging.PagedList;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.arctouch.codechallenge.R;
 import com.arctouch.codechallenge.model.Movie;
@@ -20,6 +23,9 @@ import com.arctouch.codechallenge.ui.details.DetailsActivity;
 import com.arctouch.codechallenge.util.NetworkState;
 
 public class HomeView extends Fragment implements MovieClickListener {
+    public static final String MID = "MID";
+    public static final String SHARE_POSTER_IMAGE = "POSTER_IMAGE";
+    public static final String SHARE_TITLE = "POSTER_TITLE";
 
     private HomeViewModel mViewModel;
     private RecyclerView recyclerView;
@@ -61,9 +67,17 @@ public class HomeView extends Fragment implements MovieClickListener {
 
 
     @Override
-    public void onClick(Movie movie) {
+    public void onClick(Movie movie, ImageView poster, TextView title) {
+
+        Pair<View, String> pair = new Pair<>(poster, SHARE_POSTER_IMAGE);
+        Pair<View, String> pair2= new Pair<>(title, SHARE_TITLE);
+
+
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), pair, pair2);
         Intent it = new Intent(getContext(), DetailsActivity.class);
-        it.putExtra("mid", movie.id);
-        startActivity(it);
+        it.putExtra(MID, movie.id);
+        ActivityCompat.startActivity(getContext(), it, options.toBundle());
+
+
     }
 }

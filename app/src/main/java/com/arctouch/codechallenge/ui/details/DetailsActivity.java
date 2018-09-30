@@ -2,11 +2,13 @@ package com.arctouch.codechallenge.ui.details;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 
 import com.arctouch.codechallenge.R;
 
 public class DetailsActivity extends AppCompatActivity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -15,6 +17,9 @@ public class DetailsActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             Fragment fragment = DetailsView.newInstance();
             Bundle bundle = getIntent().getExtras();
+
+
+
             fragment.setArguments(bundle);
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, fragment)

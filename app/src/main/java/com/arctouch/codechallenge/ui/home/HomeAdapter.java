@@ -47,12 +47,9 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
             genresTextView = itemView.findViewById(R.id.genresTextView);
             releaseDateTextView = itemView.findViewById(R.id.releaseDateTextView);
             posterImageView = itemView.findViewById(R.id.posterImageView);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Movie movie = (Movie) view.getTag();
-                    mClickListener.onClick(movie);
-                }
+            itemView.setOnClickListener(view -> {
+                Movie movie = (Movie) view.getTag();
+                mClickListener.onClick(movie, posterImageView, titleTextView);
             });
         }
 
