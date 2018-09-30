@@ -3,8 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="wrap_content"
     android:layout_width="wrap_content"
-    android:layout_margin="4dp"
-    >
+    android:layout_margin="4dp" >
     <RelativeLayout
 
         android:layout_width="wrap_content"
@@ -19,7 +18,9 @@
             android:text="Genre"
             android:textAlignment="center"
             android:textStyle="bold"
-            tools:text="@tools:sample/cities" />
+            tools:text="@tools:sample/cities"
+            android:layout_centerInParent="true"
+            android:textSize="12sp"/>
 
 
     </RelativeLayout>
