@@ -1,6 +1,8 @@
 package com.arctouch.codechallenge.ui.home;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModelProviders;
+import android.arch.paging.PagedList;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,20 +15,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.arctouch.codechallenge.R;
-import com.arctouch.codechallenge.api.TmdbApi;
-import com.arctouch.codechallenge.data.Cache;
-import com.arctouch.codechallenge.model.Genre;
 import com.arctouch.codechallenge.model.Movie;
-import com.arctouch.codechallenge.model.UpcomingMoviesResponse;
 import com.arctouch.codechallenge.ui.details.DetailsActivity;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
+import com.arctouch.codechallenge.util.NetworkState;
 
 public class HomeView extends Fragment implements MovieClickListener {
 
@@ -34,14 +25,10 @@ public class HomeView extends Fragment implements MovieClickListener {
     private RecyclerView recyclerView;
     private View progressBar;
     private MovieAdapter adapter;
-
-    public static HomeView newInstance() {
-        return new HomeView();
-    }
+    private LiveData<NetworkState> networkState;
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.home_view_fragment, container, false);
 
         this.recyclerView = view.findViewById(R.id.recyclerView);
@@ -55,20 +42,20 @@ public class HomeView extends Fragment implements MovieClickListener {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
-
-        mViewModel.init();
-
-        mViewModel.getMovieLiveData().observe(this, response -> {
-            adapter.submitList(response);
-            progressBar.setVisibility(View.GONE);
-        });
-
+        mViewModel.getMovieListLiveData().observe(this, response -> updateAdapterList(response));
+        networkState = mViewModel.getNetworkState();
+        networkState.observe(this, networkState -> onNetworkStateChange(networkState));
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
+    private void onNetworkStateChange(NetworkState networkState) {
+        adapter.setNetworkState(networkState);
     }
+
+    private void updateAdapterList(PagedList<Movie> response) {
+        adapter.submitList(response);
+        progressBar.setVisibility(View.GONE);
+    }
+
 
     @Override
     public void onClick(Movie movie) {

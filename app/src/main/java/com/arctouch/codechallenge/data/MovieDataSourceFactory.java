@@ -4,22 +4,21 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.paging.DataSource;
 
 public class MovieDataSourceFactory extends DataSource.Factory {
+    private MutableLiveData<MovieDataSource> movieDataSourceLiveData;
 
-    private final MutableLiveData<MovieDataSource> mutableLiveData;
-    private MovieDataSource movieDataSource;
-
-    public MovieDataSourceFactory () {
-        this.mutableLiveData = new MutableLiveData<>();
+    public MovieDataSourceFactory() {
+        movieDataSourceLiveData = new MutableLiveData<>();
     }
 
     @Override
     public DataSource create() {
-        movieDataSource = new MovieDataSource();
-        mutableLiveData.postValue(movieDataSource);
+        MovieDataSource movieDataSource = new MovieDataSource();
+        movieDataSourceLiveData.postValue(movieDataSource);
         return movieDataSource;
     }
 
-    public MutableLiveData<MovieDataSource> getMutableLiveData() {
-        return  mutableLiveData;
+
+    public MutableLiveData<MovieDataSource> getMovieDataSourceLiveData() {
+        return movieDataSourceLiveData;
     }
 }

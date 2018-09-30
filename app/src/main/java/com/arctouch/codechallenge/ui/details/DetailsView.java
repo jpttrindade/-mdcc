@@ -65,7 +65,7 @@ public class DetailsView extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(DetailsViewModel.class);
-        mViewModel.getMovieDetail().observe(this, movie -> loadData(movie));
+        mViewModel.getMovieDetailLiveData().observe(this, movie -> loadData(movie));
     }
 
 

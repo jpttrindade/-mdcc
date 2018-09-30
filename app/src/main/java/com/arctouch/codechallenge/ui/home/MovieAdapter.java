@@ -19,7 +19,7 @@ import com.arctouch.codechallenge.util.NetworkState;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
-import java.util.List;
+import java.util.Objects;
 
 public class MovieAdapter extends PagedListAdapter<Movie, RecyclerView.ViewHolder> {
     private final MovieClickListener mMovieClickListner;
@@ -33,26 +33,25 @@ public class MovieAdapter extends PagedListAdapter<Movie, RecyclerView.ViewHolde
         mMovieClickListner = movieClickListener;
     }
 
-    private static DiffUtil.ItemCallback<Movie> DIFF_CALLBACK =
-            new DiffUtil.ItemCallback<Movie>() {
-                // The ID property identifies when items are the same.
-                @Override
-                public boolean areItemsTheSame(Movie oldItem, Movie newItem) {
-                    return oldItem.id == newItem.id;
-                }
+    private static DiffUtil.ItemCallback<Movie> DIFF_CALLBACK = new DiffUtil.ItemCallback<Movie>() {
+        // The ID property identifies when items are the same.
+        @Override
+        public boolean areItemsTheSame(Movie oldItem, Movie newItem) {
+            return oldItem.id == newItem.id;
+        }
 
-                // Use Object.equals() to know when an item's content changes.
-                // Implement equals(), or write custom data comparison logic here.
-                @Override
-                public boolean areContentsTheSame(Movie oldItem, Movie newItem) {
-                    return oldItem.equals(newItem);
-                }
-            };
+        // Use Object.equals() to know when an item's content changes.
+        // Implement equals(), or write custom data comparison logic here.
+        @Override
+        public boolean areContentsTheSame(Movie oldItem, Movie newItem) {
+            return Objects.equals(oldItem, newItem);
+        }
+    };
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());//.inflate(R.layout.movie_item, parent, false);
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View view;
         if (viewType == TYPE_PROGRESS) {
             view = layoutInflater.inflate(R.layout.loading, parent, false);
@@ -65,11 +64,9 @@ public class MovieAdapter extends PagedListAdapter<Movie, RecyclerView.ViewHolde
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-
         if (holder instanceof MovieViewHolder) {
             Movie movie = getItem(position);
             ((MovieViewHolder) holder).bindTo(movie);
-
         } else {
             ((NetworkStateVH) holder).bindTo(networkState);
         }
@@ -95,6 +92,7 @@ public class MovieAdapter extends PagedListAdapter<Movie, RecyclerView.ViewHolde
 
     public void setNetworkState(NetworkState newNetworkState) {
         NetworkState previousState = this.networkState;
+
         boolean previousExtraRow = hasExtraRow();
         this.networkState = newNetworkState;
         boolean newExtraRow = hasExtraRow();
@@ -139,7 +137,7 @@ public class MovieAdapter extends PagedListAdapter<Movie, RecyclerView.ViewHolde
             releaseDateTextView.setText(movie.releaseDate);
 
             String posterPath = movie.posterPath;
-            if (TextUtils.isEmpty(posterPath) == false) {
+            if (!TextUtils.isEmpty(posterPath)) {
                 Glide.with(itemView)
                         .load(movieImageUrlBuilder.buildPosterUrl(posterPath))
                         .apply(new RequestOptions().placeholder(R.drawable.ic_image_placeholder))
