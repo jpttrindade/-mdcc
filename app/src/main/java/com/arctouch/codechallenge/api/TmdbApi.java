@@ -5,6 +5,7 @@ import com.arctouch.codechallenge.model.Movie;
 import com.arctouch.codechallenge.model.UpcomingMoviesResponse;
 
 import io.reactivex.Observable;
+import retrofit2.Response;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -17,23 +18,19 @@ public interface TmdbApi {
     String DEFAULT_REGION = "BR";
 
     @GET("genre/movie/list")
-    Observable<GenreResponse> genres(
-            @Query("api_key") String apiKey,
-            @Query("language") String language
+    Observable<Response<GenreResponse>> genres(
+            @Query("api_key") String apiKey
     );
 
     @GET("movie/upcoming")
-    Observable<UpcomingMoviesResponse> upcomingMovies(
+    Observable<Response<UpcomingMoviesResponse>> upcomingMovies(
             @Query("api_key") String apiKey,
-            @Query("language") String language,
-            @Query("page") Long page,
-            @Query("region") String region
+            @Query("page") Long page
     );
 
     @GET("movie/{id}")
     Observable<Movie> movie(
             @Path("id") Long id,
-            @Query("api_key") String apiKey,
-            @Query("language") String language
+            @Query("api_key") String apiKey
     );
 }
