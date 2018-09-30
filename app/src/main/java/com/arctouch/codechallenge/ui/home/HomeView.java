@@ -33,7 +33,7 @@ public class HomeView extends Fragment implements MovieClickListener {
     private HomeViewModel mViewModel;
     private RecyclerView recyclerView;
     private View progressBar;
-    private HomeAdapter adapter;
+    private MovieAdapter adapter;
 
     public static HomeView newInstance() {
         return new HomeView();
@@ -46,7 +46,7 @@ public class HomeView extends Fragment implements MovieClickListener {
 
         this.recyclerView = view.findViewById(R.id.recyclerView);
         this.progressBar = view.findViewById(R.id.progressBar);
-        adapter = new HomeAdapter(this);
+        adapter = new MovieAdapter(this);
         recyclerView.setAdapter(adapter);
         return view;
     }
@@ -56,17 +56,18 @@ public class HomeView extends Fragment implements MovieClickListener {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
 
+        mViewModel.init();
 
-        mViewModel.getUpcomingMovies().observe(this, response -> {
-            adapter.setList(response);
+        mViewModel.getMovieLiveData().observe(this, response -> {
+            adapter.submitList(response);
             progressBar.setVisibility(View.GONE);
         });
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mViewModel.loadData(false);
     }
 
     @Override

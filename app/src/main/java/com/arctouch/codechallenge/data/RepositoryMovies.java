@@ -1,19 +1,14 @@
 package com.arctouch.codechallenge.data;
 
 
-import android.util.Log;
-
 import com.arctouch.codechallenge.api.TmdbApi;
+import com.arctouch.codechallenge.api.TmdbApiFactory;
 import com.arctouch.codechallenge.model.Movie;
 import com.arctouch.codechallenge.model.UpcomingMoviesResponse;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.OkHttpClient;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.moshi.MoshiConverterFactory;
 
 public class RepositoryMovies {
     private TmdbApi api;
@@ -28,25 +23,18 @@ public class RepositoryMovies {
     }
 
     private RepositoryMovies() {
-        this.api = new Retrofit.Builder()
-                .baseUrl(TmdbApi.URL)
-                .client(new OkHttpClient.Builder().build())
-                .addConverterFactory(MoshiConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .build()
-                .create(TmdbApi.class);
+        this.api = TmdbApiFactory.create();
     }
 
-    public void upcomingMovies(Observer<UpcomingMoviesResponse> observer) {
-        Log.d("DEBUG", "UpcomingMovies()");
-        api.upcomingMovies(TmdbApi.API_KEY, 1L)
+    public void getMovieDetails(long id, Observer<Movie> observer) {
+        api.movie(id, TmdbApi.API_KEY)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(observer);
     }
 
-    public void getMovieDetails(long id, Observer<Movie> observer) {
-        api.movie(id, TmdbApi.API_KEY)
+    public void nextUpcomingMovies(long page, Observer<UpcomingMoviesResponse> observer) {
+        api.upcomingMovies(TmdbApi.API_KEY, page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(observer);

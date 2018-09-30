@@ -3,7 +3,6 @@ package com.arctouch.codechallenge.ui.details;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
-import android.util.Log;
 
 import com.arctouch.codechallenge.data.RepositoryMovies;
 import com.arctouch.codechallenge.model.Movie;

@@ -2,62 +2,55 @@ package com.arctouch.codechallenge.ui.home;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.Transformations;
 import android.arch.lifecycle.ViewModel;
+import android.arch.paging.LivePagedListBuilder;
+import android.arch.paging.PagedList;
 
+import com.arctouch.codechallenge.data.MovieDataSourceFactory;
 import com.arctouch.codechallenge.data.RepositoryMovies;
 import com.arctouch.codechallenge.model.Movie;
-import com.arctouch.codechallenge.model.UpcomingMoviesResponse;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class HomeViewModel extends ViewModel {
     private RepositoryMovies repositoryMovies;
 
-    private final List<Movie> upcomingMovies;
-    private MutableLiveData<List<Movie>> movies;
+    private LiveData<PagedList<Movie>> movies;
+
+
+    private long page;
+    private Executor executor;
+    private LiveData networkState;
+    private LiveData movieLiveData;
+
 
     public HomeViewModel() {
+        page = 1;
         repositoryMovies = RepositoryMovies.getInstance();
         movies = new MutableLiveData<>();
-        upcomingMovies = new ArrayList<>();
     }
 
+    public void init() {
+        executor = Executors.newFixedThreadPool(5);
+        MovieDataSourceFactory movieDataSourceFactory = new MovieDataSourceFactory();
+        networkState = Transformations.switchMap(movieDataSourceFactory.getMutableLiveData(), datasource -> datasource.getNetworkState());
 
-    public LiveData<List<Movie>> getUpcomingMovies() {
-        return movies;
-    }
+        PagedList.Config pagedListConfig = new PagedList.Config.Builder()
+                .setEnablePlaceholders(false)
+                .setInitialLoadSizeHint(10)
+                .setPageSize(20).build();
 
-    public void loadData(boolean forceUpdate) {
-        if (forceUpdate || upcomingMovies.size() == 0) {
-            repositoryMovies.upcomingMovies(new Observer<UpcomingMoviesResponse>() {
-                @Override
-                public void onSubscribe(Disposable d) {
+        movieLiveData = new LivePagedListBuilder(movieDataSourceFactory, pagedListConfig)
+                .setFetchExecutor(executor)
+                .build();
 
-                }
-
-                @Override
-                public void onNext(UpcomingMoviesResponse response) {
-                    upcomingMovies.addAll(response.results);
-                    movies.setValue(upcomingMovies);
-                }
-
-                @Override
-                public void onError(Throwable e) {
-
-                }
-
-                @Override
-                public void onComplete() {
-
-                }
-            });
-        } else {
-            movies.setValue(upcomingMovies);
-        }
 
     }
+
+    public LiveData<PagedList<Movie>> getMovieLiveData() {
+        return movieLiveData;
+    }
+
 }
