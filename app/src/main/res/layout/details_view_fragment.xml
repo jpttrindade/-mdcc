@@ -28,7 +28,7 @@
 
 
             <android.support.v7.widget.Toolbar
-                android:id="@+id/app_bar"
+                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
                 android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
@@ -43,14 +43,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="800dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" >
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/detailsview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".ui.details.DetailsActivity"
-            android:padding="16dp">
+            android:padding="16dp"
+            tools:context=".ui.details.DetailsActivity">
 
             <TextView
                 android:id="@+id/tvTilte"
@@ -60,6 +60,7 @@
                 android:textAlignment="textStart"
                 android:textSize="18sp"
                 android:textStyle="bold"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/ivPoster"
                 app:layout_constraintTop_toTopOf="@+id/ivPoster"
@@ -69,11 +70,12 @@
                 android:id="@+id/tvOverview"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:minHeight="200dp"
+                android:layout_marginStart="8dp"
                 android:textStyle="italic"
-                app:layout_constraintEnd_toEndOf="@+id/rvGenres"
-                app:layout_constraintStart_toStartOf="@+id/ivPoster"
-                app:layout_constraintTop_toBottomOf="@+id/tvRelaseDate"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/ivPoster"
+                app:layout_constraintTop_toTopOf="@+id/ivPoster"
                 tools:text="@tools:sample/full_names" />
 
             <ImageView
@@ -88,19 +90,19 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:src="@tools:sample/avatars[1]" />
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rvGenres"
+            <br.com.jpttrindade.tagview.TagView
+                android:id="@+id/tagview"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginStart="8dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                app:layoutManager="android.support.v7.widget.StaggeredGridLayoutManager"
-                app:layout_constraintBottom_toBottomOf="@+id/ivPoster"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/ivPoster"
-                app:layout_constraintTop_toBottomOf="@+id/tvTilte"
-                app:spanCount="3"
-                tools:listitem="@layout/genre_item" />
+                app:grid_spans="1"
+                app:layout_constraintEnd_toEndOf="@+id/tvOverview"
+                app:layout_constraintStart_toStartOf="@+id/ivPoster"
+                app:layout_constraintTop_toBottomOf="@+id/tvOverview"
+                app:layout_type="grid"
+                app:tag_cornerRadius="4dp"
+                app:tag_textBold="true" />
+
 
 
             <ProgressBar
