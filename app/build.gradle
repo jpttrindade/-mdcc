@@ -49,6 +49,8 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
     implementation 'br.com.jpttrindade:tagview:1.7'
+    implementation 'com.facebook.shimmer:shimmer:0.3.0'
+
 
 
 }

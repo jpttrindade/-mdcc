@@ -21,6 +21,8 @@ import com.arctouch.codechallenge.R;
 import com.arctouch.codechallenge.model.Movie;
 import com.arctouch.codechallenge.ui.details.DetailsActivity;
 import com.arctouch.codechallenge.util.NetworkState;
+import com.facebook.shimmer.Shimmer;
+import com.facebook.shimmer.ShimmerFrameLayout;
 
 public class HomeView extends Fragment implements MovieClickListener {
     public static final String MID = "MID";
@@ -29,7 +31,7 @@ public class HomeView extends Fragment implements MovieClickListener {
 
     private HomeViewModel mViewModel;
     private RecyclerView recyclerView;
-    private View progressBar;
+    private ShimmerFrameLayout shimmer_view_container;
     private MovieAdapter adapter;
 
     @Override
@@ -37,7 +39,8 @@ public class HomeView extends Fragment implements MovieClickListener {
         View view = inflater.inflate(R.layout.home_view_fragment, container, false);
 
         this.recyclerView = view.findViewById(R.id.recyclerView);
-        this.progressBar = view.findViewById(R.id.progressBar);
+        this.shimmer_view_container = view.findViewById(R.id.shimmer_view_container);
+        this.shimmer_view_container.startShimmer();
         adapter = new MovieAdapter(this);
         recyclerView.setAdapter(adapter);
         return view;
@@ -62,7 +65,9 @@ public class HomeView extends Fragment implements MovieClickListener {
 
     private void updateAdapterList(PagedList<Movie> response) {
         adapter.submitList(response);
-        progressBar.setVisibility(View.GONE);
+        //shimmer_view_container.setVisibility(View.GONE);
+        shimmer_view_container.stopShimmer();
+        shimmer_view_container.setVisibility(View.GONE);
     }
 
 

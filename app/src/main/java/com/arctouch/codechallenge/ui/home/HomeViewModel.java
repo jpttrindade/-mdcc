@@ -3,6 +3,7 @@ package com.arctouch.codechallenge.ui.home;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 import android.arch.paging.PagedList;
+import android.util.Log;
 
 import com.arctouch.codechallenge.data.RepositoryMovies;
 import com.arctouch.codechallenge.model.Movie;
@@ -17,6 +18,7 @@ public class HomeViewModel extends ViewModel {
     }
 
     public LiveData<PagedList<Movie>> getMovieListLiveData() {
+        Log.d("DEBUG", "getMovieListLiveData => "+movieListLiveData);
         if (movieListLiveData == null ) {
             movieListLiveData = repositoryMovies.getMovieListLiveData();
         }
