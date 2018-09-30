@@ -26,4 +26,8 @@ public class HomeViewModel extends ViewModel {
     public LiveData<NetworkState> getNetworkState() {
         return repositoryMovies.getNetworkState();
     }
+
+    public LiveData<Boolean> init() {
+        return repositoryMovies.loadGenres();
+    }
 }

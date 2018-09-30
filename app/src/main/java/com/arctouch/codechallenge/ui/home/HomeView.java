@@ -25,7 +25,6 @@ public class HomeView extends Fragment implements MovieClickListener {
     private RecyclerView recyclerView;
     private View progressBar;
     private MovieAdapter adapter;
-    private LiveData<NetworkState> networkState;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -41,10 +40,14 @@ public class HomeView extends Fragment implements MovieClickListener {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         mViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
-        mViewModel.getMovieListLiveData().observe(this, response -> updateAdapterList(response));
-        networkState = mViewModel.getNetworkState();
-        networkState.observe(this, networkState -> onNetworkStateChange(networkState));
+        mViewModel.init().observe(this, (loadGenres) -> {
+            mViewModel.getMovieListLiveData().observe(this, response -> updateAdapterList(response));
+            mViewModel.getNetworkState().observe(this, networkState -> onNetworkStateChange(networkState));
+        });
+
+
     }
 
     private void onNetworkStateChange(NetworkState networkState) {

@@ -10,9 +10,12 @@ import android.util.Log;
 
 import com.arctouch.codechallenge.api.TmdbApi;
 import com.arctouch.codechallenge.api.TmdbApiFactory;
+import com.arctouch.codechallenge.model.Genre;
 import com.arctouch.codechallenge.model.Movie;
+import com.arctouch.codechallenge.model.UpcomingMoviesResponse;
 import com.arctouch.codechallenge.util.NetworkState;
 
+import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -42,12 +45,26 @@ public class RepositoryMovies {
         networkSate = Transformations.switchMap(movieDataSourceFactory.getMovieDataSourceLiveData(), dataSource -> dataSource.getNetworkState());
     }
 
+    public LiveData<Boolean> loadGenres() {
+        MutableLiveData result = new MutableLiveData();
+        mApi.genres(TmdbApi.API_KEY)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(response -> {
+                    Cache.setGenres(response.body().genres);
+                    result.postValue(true);
+                });
+        return result;
+    }
+
     public void loadMovieDetail(long id) {
         Log.d("DEBUG", "loadMovieDetail");
         mApi.movie(id, TmdbApi.API_KEY)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(movie -> movieDetailLiveData.postValue(movie));
+                .subscribe(movie -> {
+                    movieDetailLiveData.postValue(movie);
+                });
     }
 
 

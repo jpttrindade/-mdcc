@@ -18,9 +18,8 @@ public interface TmdbApi {
     String DEFAULT_REGION = "BR";
 
     @GET("genre/movie/list")
-    Observable<GenreResponse> genres(
-            @Query("api_key") String apiKey,
-            @Query("language") String language
+    Observable<Response<GenreResponse>> genres(
+            @Query("api_key") String apiKey
     );
 
     @GET("movie/upcoming")
